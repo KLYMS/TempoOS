@@ -13,6 +13,13 @@ GCC         = /usr/local/cross/bin/x86_64-elf-gcc
 LD_ELF32    =  -m elf_i386
 # for 32 bit binary after PM
 GCC_32      = -m32
+STD_        = -std=gnu99
+OPT         = -O2
+WARNINGS    = -Wall -Wextra -Werror
+NO_STD      =  -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -ffreestanding
+CFLAGS      = $(STD_) $(GCC_32) $(WARNINGS) $(NO_STD) $(OPT) 
+
+
 
 # Build paths
 BUILD       = ../build
@@ -38,15 +45,15 @@ $(BUILD)/$(OS_IMG): $(BUILD)/$(BOOT_BIN) $(BUILD)/$(KERNEL_BIN)
 	cat $^ > $@
 
 # Rule to assemble the kernel entry (written in assembly)
-# $(BUILD)/kernel_entry.o: $(KERNEL)/kernel_entry.asm
-# 	$(ASM) $^ $(ASM_ELF) -o $@
+$(BUILD)/kernel_entry.o: $(BOOTLOADER)/kernel_entry.asm
+	$(ASM) $^ $(ASM_ELF) -o $@
 
 # Rule to compile the C kernel
 $(BUILD)/kernel.o: $(KERNEL)/kernel.c
-	$(GCC) $(GCC_32) -ffreestanding -c $< -o $@
+	$(GCC) $(CFLAGS) -c $< -o $@ 
 
 # Rule to build the kernel binary
-$(BUILD)/$(KERNEL_BIN): $(BUILD)/kernel.o #$(BUILD)/kernel_entry.o
+$(BUILD)/$(KERNEL_BIN): $(BUILD)/kernel_entry.o $(BUILD)/kernel.o 
 	$(LD) $(LD_ELF32) -o $@ -Ttext 0x1000 $^ --oformat binary
 
 # Rule to assemble the bootloader (boot sector)

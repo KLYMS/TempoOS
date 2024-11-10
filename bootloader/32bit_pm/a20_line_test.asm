@@ -13,6 +13,6 @@ is_A20_on:
 
 A20_on:
   mov ebx, MSG_a20
-  call print_string_pm
+  call Puts32
   ret
 
