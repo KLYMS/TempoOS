@@ -1,12 +1,9 @@
 #include <stdint.h>
 #include <stddef.h>
-
-//////////////////////////////////////////////   Implemerntation For the terminal use 
-#include "../drivers/tty.h"
+#include "tty.h"
 
 size_t terminal_row =0;
 size_t terminal_column =0;
-uint8_t terminal_vcolor;
 uint16_t* terminal_buffer = (uint16_t*)(0xB8000);
 
 void disable_interrupts() { asm volatile("cli"); }
@@ -102,10 +99,10 @@ void terminal_writestr(const char* data, size_t size, uint8_t color){
 void terminal_initialize(){
   terminal_row = 0;
   terminal_column = 0;
-  terminal_vcolor = terminal_color(GREEN, BLACK);
+  uint8_t color = terminal_color(GREEN, MAGENTA);
   for(size_t y=0; y<VGA_SCREEN_HEIGTH; y++){
     for(size_t x=0; x<VGA_SCREEN_WIDTH; x++){
-      terminal_putcharat(' ', terminal_vcolor, x,y);
+      terminal_putcharat(' ', color, x,y);
     }
   }
 }
@@ -118,19 +115,5 @@ void print2(const char* msg, uint8_t color){
   size_t len = strlen(msg);
   terminal_writestr(msg, len, color);
 }
-////////////////////////////////////////////////////////////////////////////
 
-
-/////////////////////////////////////////////////////////////////// IDT Implementation
-
-
-
-
-////////////////////////////////////////////////////////////////////////
-
-void main() {
-  terminal_initialize();
-  char* msg = "Hii...FK U";
-  print(msg);
-}
 
