@@ -130,7 +130,7 @@ void print2(const char* msg, uint8_t color){
 
 void main() {
   terminal_initialize();
-  char* msg = "Hii...FK U";
+  char* msg = "Hii,....";
   print(msg);
 }
 
