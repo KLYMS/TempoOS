@@ -4,6 +4,7 @@
 
 size_t terminal_row =0;
 size_t terminal_column =0;
+uint8_t terminal_vcolor =0;
 uint16_t* terminal_buffer = (uint16_t*)(0xB8000);
 
 void disable_interrupts() { asm volatile("cli"); }
@@ -22,7 +23,7 @@ uint16_t terminal_make_char(char c, uint8_t colour){
 
 void terminal_scroll(){
 
-  for(size_t y=0; y<VGA_SCREEN_HEIGTH; y++){
+  for(size_t y=1; y<VGA_SCREEN_HEIGTH; y++){
     for(size_t x=0; x<VGA_SCREEN_WIDTH; x++){
       size_t index_current = (y*VGA_SCREEN_WIDTH) + x;
       size_t index_previous = ((y-1)*VGA_SCREEN_WIDTH) + x;
@@ -99,10 +100,10 @@ void terminal_writestr(const char* data, size_t size, uint8_t color){
 void terminal_initialize(){
   terminal_row = 0;
   terminal_column = 0;
-  uint8_t color = terminal_color(GREEN, MAGENTA);
+  terminal_vcolor = terminal_color(GREEN, BLACK);
   for(size_t y=0; y<VGA_SCREEN_HEIGTH; y++){
     for(size_t x=0; x<VGA_SCREEN_WIDTH; x++){
-      terminal_putcharat(' ', color, x,y);
+      terminal_putcharat(' ', terminal_vcolor, x,y);
     }
   }
 }

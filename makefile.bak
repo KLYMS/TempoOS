@@ -21,31 +21,23 @@ GCC_32 			= -m32
 STD_				= -std=gnu99
 OPT 				= -O0
 WARNINGS 		= -Wall -Wextra -Werror
-NO_STD			= -ffreestanding -fno-pie -fno-pic -fno-stack-protector
+NO_STD			= -ffreestanding
 GCC_DEBUG		= -g
 CFLAGS			=	$(STD_) $(GCC_32) $(OPT) $(WARNINGS) $(NO_STD) 
 # Additional include directories
 CFLAGS += $(addprefix -I, $(SRC_DIRS))
 CFLAGS += -nostdlib -lgcc
 
-# --- Source Discovery ---
-SRC_DIRS    = kernel drivers .
-
 BOOTLOADER	= bootloader
+SRC_DIRS    = ./
 BUILD_DIR 	= ./build
 BUILD_DIRS := $(addprefix $(BUILD_DIR)/, $(SRC_DIRS))
 DEBUG_DIR	= debug
 
-vpath %.c $(SRC_DIRS)
-vpath %.asm BOOTLOADER
-
 # Files
-C_FILES   = $(shell find $(SRC_DIRS) -maxdepth 1 -name "*.c")
-OBJ_FILES = $(patsubst %.c, $(BUILD_DIR)/%.o, $(notdir $(C_FILES)))
-
 ASM_FILES     = $(shell find $(SRC_DIRS) -name "*.asm")
-# C_FILES       = $(shell find $(SRC_DIRS) -name "*.c")
-# OBJ_FILES 		= $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_FILES))) 
+C_FILES       = $(shell find $(SRC_DIRS) -name "*.c")
+OBJ_FILES 		= $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_FILES))) 
 #            $(patsubst %.asm,$(BUILD_DIR)/%.o,$(notdir $(ASM_FILES)))
 
 # Outputs
@@ -86,9 +78,15 @@ $(BUILD_DIR)/kernel_entry.o: $(BOOTLOADER)/kernel_entry.asm
 	@$(ASM) $(ASM_ELF) $< -o $@
 
 # Object file compilation rules
-$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o : $(C_FILES)
 	@echo "[CC] Compiling $< -> $@"
-	$(CC) $(CFLAGS) -c $< -o $@
+# @mkdir -p $(dir $@)
+	@$(GCC) $(CFLAGS) -c $< -o $@
+
+# $(BUILD_DIR)/%.o: %.asm
+# 	@echo "[ASM] Assembling $< -> $@"
+# 	@mkdir -p $(dir $@)
+# 	@$(ASM) $(ASM_BIN) $< -o $@
 
 run: $(OS_IMAGE) build
 	$(QEMU) $(QEMU_CPU32) $(FDA) $<
