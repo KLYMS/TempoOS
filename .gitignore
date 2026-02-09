@@ -1,2 +1,4 @@
 roadmap_build.md
 build/
+*.bak
+*.ac
