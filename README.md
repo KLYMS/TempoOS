@@ -1,6 +1,6 @@
 # My Hobby OS: A Learning Journey
 
-This project is a journey into the world of operating system development. The primary goal is to learn and understand the low-level workings of an OS, exploring how it bridges the gap between hardware and software. This is a learning exercise focused on implementing the core components of a modern operating system from scratch.
+This project is a journey into the world of operating system development, undertaken as a hobby in my spare time. The primary goal is to learn and understand the low-level workings of an OS, exploring how it bridges the gap between hardware and software. This is a learning exercise focused on implementing the core components of a modern operating system from scratch.
 
 ## Core Learning Objectives
 
