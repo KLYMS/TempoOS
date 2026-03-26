@@ -4,6 +4,6 @@
 
 void main() {
   terminal_initialize();
-  char *msg = "HEllo Shitty World";
+  char *msg = "HEllo World...";
   print(msg);
 }
